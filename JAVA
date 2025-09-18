@@ -1,42 +1,71 @@
-import java.util.Scanner;
+import java.util.Arrays;
 
-public class Task1 {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        System.out.print("Введите размер массива: ");
-        int n = sc.nextInt();
+public class SecondLargestElement {
 
-        int[] arr = new int[n];
-        System.out.println("Введите элементы массива:");
-        for (int i = 0; i < n; i++) {
-            arr[i] = sc.nextInt();
+    public static int findSecondLargest(int[] array) {
+        if (array == null  array.length < 2) {
+            throw new IllegalArgumentException("Массив должен содержать как минимум два элемента");
         }
-
-        int count = 0;
-        for (int x : arr) {
-            if (x < 0) count++;
+        
+        int largest = Integer.MIN_VALUE;
+        int secondLargest = Integer.MIN_VALUE;
+        
+        for (int num : array) {
+            if (num > largest) {
+                secondLargest = largest;
+                largest = num;
+            } else if (num > secondLargest && num != largest) {
+                secondLargest = num;
+            }
         }
-
-        System.out.println("Количество отрицательных чисел: " + count);
+        
+        if (secondLargest == Integer.MIN_VALUE) {
+            throw new IllegalArgumentException("В массиве нет второго уникального максимального элемента");
+        }
+        
+        return secondLargest;
     }
-}
-
-import java.util.ArrayList;
-import java.util.List;
-
-public class Task2 {
-    public static void main(String[] args) {
-        List<Integer> nums = new ArrayList<>();
-        nums.add(10);
-        nums.add(20);
-        nums.add(-5);
-        nums.add(15);
-
-        int sum = 0;
-        for (int x : nums) {
-            sum += x;
+    
+    // Альтернативное решение с сортировкой
+    public static int findSecondLargestAlternative(int[] array) {
+        if (array == null  array.length < 2) {
+            throw new IllegalArgumentException("Массив должен содержать как минимум два элемента");
         }
+        
+        // Создаем копию чтобы не менять исходный массив
+        int[] sortedArray = Arrays.copyOf(array, array.length);
+        Arrays.sort(sortedArray);
+        
+        // Ищем первый элемент с конца, который меньше максимального
+        int max = sortedArray[sortedArray.length - 1];
+        for (int i = sortedArray.length - 2; i >= 0; i--) {
+            if (sortedArray[i] != max) {
+                return sortedArray[i];
+            }
+        }
+        
+        throw new IllegalArgumentException("В массиве нет второго уникального максимального элемента");
+    }
 
-        System.out.println("Сумма элементов списка: " + sum);
+    public static void main(String[] args) {
+        int[] testArray1 = {12, 35, 1, 10, 34, 1};
+        int[] testArray2 = {10, 10, 10};
+        int[] testArray3 = {5, 2};
+        
+        System.out.println("Тест 1: " + Arrays.toString(testArray1));
+        System.out.println("Второй по величине: " + findSecondLargest(testArray1));
+        System.out.println("Альтернативный метод: " + findSecondLargestAlternative(testArray1));
+        System.out.println();
+        
+        System.out.println("Тест 2: " + Arrays.toString(testArray2));
+        try {
+            System.out.println("Второй по величине: " + findSecondLargest(testArray2));
+        } catch (IllegalArgumentException e) {
+            System.out.println("Ошибка: " + e.getMessage());
+        }
+        System.out.println();
+        
+        System.out.println("Тест 3: " + Arrays.toString(testArray3));
+        System.out.println("Второй по величине: " + findSecondLargest(testArray3));
     }
 }
